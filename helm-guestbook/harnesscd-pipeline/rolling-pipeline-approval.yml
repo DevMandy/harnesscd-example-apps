@@ -71,5 +71,5 @@ pipeline:
                 - AllErrors
               action:
                 type: StageRollback
-  identifier: bakguestbook_rolling_pipeline_Approval_Trigger
+  identifier: guestbook_rolling_pipeline_Approval_Trigger
   name: guestbook_rolling_pipeline
