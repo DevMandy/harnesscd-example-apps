@@ -1,10 +1,37 @@
 pipeline:
-  name: guestbook_rolling_pipeline
-  identifier: guestbook_rolling_pipeline
   projectIdentifier: default_project
   orgIdentifier: default
   tags: {}
   stages:
+    - stage:
+        name: Approval
+        identifier: Approval
+        description: ""
+        type: Approval
+        spec:
+          execution:
+            steps:
+              - step:
+                  name: Approval
+                  identifier: Approval
+                  type: HarnessApproval
+                  timeout: 1d
+                  spec:
+                    approvalMessage: |-
+                      Please review the following information
+                      and approve the pipeline progression
+                    includePipelineExecutionHistory: true
+                    approvers:
+                      minimumCount: 1
+                      disallowPipelineExecutor: false
+                      userGroups:
+                        - account._account_all_users
+                    isAutoRejectEnabled: false
+                    approverInputs: []
+                  when:
+                    stageStatus: Success
+                    condition: <+trigger.targetBranch.equals("master")>
+        tags: {}
     - stage:
         name: deploy-guestbook
         identifier: deployguestbook
@@ -44,32 +71,5 @@ pipeline:
                 - AllErrors
               action:
                 type: StageRollback
-    - stage:
-        name: Approval
-        identifier: Approval
-        description: ""
-        type: Approval
-        spec:
-          execution:
-            steps:
-              - step:
-                  name: Approval
-                  identifier: Approval
-                  type: HarnessApproval
-                  timeout: 1d
-                  spec:
-                    approvalMessage: |-
-                      Please review the following information
-                      and approve the pipeline progression.
-                    includePipelineExecutionHistory: true
-                    approvers:
-                      minimumCount: 1
-                      disallowPipelineExecutor: false
-                      userGroups:
-                        - account._account_all_users
-                    isAutoRejectEnabled: false
-                    approverInputs: []
-                  when:
-                    stageStatus: Success
-                    condition: <+trigger.targetBranch.equals("master")>
-        tags: {}
+  identifier: bakguestbook_rolling_pipeline_Approval_Trigger
+  name: guestbook_rolling_pipeline
